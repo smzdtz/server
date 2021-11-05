@@ -1,18 +1,18 @@
+### 单元测试
+```bash
+# 在package下执行
+$ cd ./datacenter/eastmoney
 
-	 3970  go env -w GOPROXY=https://goproxy.cn,direct
+# -v 参数显示每个用例的测试结果，-cover 参数可以查看覆盖率
+$ go test
 
-	  3976  mkdir SMZDTZ
- 3977  cd SMZDTZ
- 3978  ls
- 3979  mkdir go
- 3980  cd go
- 3981  pwd
- 3982  go env -w GOPATH=/Users/aha/SMZDTZ/go
+# 执行某个测试用例
+$ go test -run TestQueryFundInfo
+```
 
-  3991  go env -w GO111MODULE=on
- 3992  go env -w GOPROXY=https://goproxy.cn,direct
- 3993  go mod init
-	
-	npm i nodemon -g
-
-	nodemon --exec go run hello.go --signal SIGTERM
+### 其他
+1. vscode自动重启
+```bash
+$ npm i nodemon -g
+$ nodemon --exec go run hello.go --signal SIGTERM
+```
