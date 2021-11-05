@@ -65,7 +65,7 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		data["Results"] = result
 		c.JSON(http.StatusOK, data)
 	})
-	// Profile 股票概况
+	// 东方财富股票概况
 	stock.GET("/profile", func(c *gin.Context) {
 		var params struct {
 			Code string `form:"code"`
@@ -77,8 +77,27 @@ func addStockRoutes(rg *gin.RouterGroup) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-
 		resp, err := datacenter.EastMoney.QueryCompanyProfile(c, params.Code)
+		if err != nil {
+			data["Error"] = err.Error()
+			c.JSON(http.StatusOK, data)
+			return
+		}
+		c.JSON(http.StatusOK, resp)
+	})
+	// 芝士财富股票概况
+	stock.GET("/zsxg/capitalInfo", func(c *gin.Context) {
+		var params struct {
+			Code string `form:"code"`
+		}
+		var data = gin.H{
+			"Results": eastmoney.CompanyProfile{},
+		}
+		if err := c.ShouldBindQuery(&params); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		resp, err := datacenter.Zsxg.QueryCommentNew(c, params.Code)
 		if err != nil {
 			data["Error"] = err.Error()
 			c.JSON(http.StatusOK, data)

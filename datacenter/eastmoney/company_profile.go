@@ -54,26 +54,6 @@ type RespJBZL struct {
 	} `json:"OtherInfo"`
 }
 
-// RespZSCF 芝士财富接口返回结构
-type RespZSCF struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
-	Datas   struct {
-		ListTime   int64 `json:"listTime"`
-		CommentNew struct {
-			PositiveNew []struct {
-				Value string `json:"Value"`
-				Tag   string `json:"Tag"`
-			} `json:"positive_new"`
-			UnPositiveNew []struct {
-				Value string `json:"Value"`
-				Tag   string `json:"Tag"`
-			} `json:"unpositive_new"`
-		} `json:"comment_new"`
-		Close string `json:"close"`
-	} `json:"datas"`
-}
-
 // RespCPBD 操盘必读接口返回结构
 type RespCPBD struct {
 	Result struct {
@@ -229,20 +209,6 @@ type CompanyProfile struct {
 	MainForms []MainForm `json:"MainForms"`
 	// 所属区域
 	Province string
-	// 上市日期
-	ListingDate int64
-	// 收盘价
-	Close string
-	//	芝士财富投资亮点
-	PositiveNew []struct {
-		Value string `json:"Value"`
-		Tag   string `json:"Tag"`
-	}
-	// 芝士财富投资风险提示
-	UnPositiveNew []struct {
-		Value string `json:"Value"`
-		Tag   string `json:"Tag"`
-	}
 }
 
 // MainFormsString 主营构成字符串
@@ -329,21 +295,10 @@ func (e EastMoney) QueryCompanyProfile(ctx context.Context, secuCode string) (Co
 	profile.Profile = resp.Result.Jibenziliao.Comprofile
 	profile.MainBusiness = resp.Result.Jibenziliao.Mainbusiness
 	profile.Province = resp.Result.Jibenziliao.Provice
-
-	// 芝士财富股票接口
-	apiurl = "https://zsxg.cn/api/v2/capital/info?code=" + strings.ToUpper(secuCode) + "&yearNum=6"
-	resp2 := RespZSCF{}
-	err = utils.HTTPGET(ctx, e.HTTPClient, apiurl, nil, &resp2)
-	if err != nil {
-		return profile, err
-	}
-	if resp2.Code != "000" {
-		return profile, err
-	}
-	profile.ListingDate = resp2.Datas.ListTime
-	profile.Close = resp2.Datas.Close
-	profile.PositiveNew = resp2.Datas.CommentNew.PositiveNew
-	profile.UnPositiveNew = resp2.Datas.CommentNew.UnPositiveNew
+	// profile.ListingDate = resp2.Datas.ListTime
+	// profile.Close = resp2.Datas.Close
+	// profile.PositiveNew = resp2.Datas.CommentNew.PositiveNew
+	// profile.UnPositiveNew = resp2.Datas.CommentNew.UnPositiveNew
 
 	// 操盘必读
 	apiurl = "https://emh5.eastmoney.com/api/CaoPanBiDu/GetCaoPanBiDuPart2Get"
