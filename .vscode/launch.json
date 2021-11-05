@@ -13,7 +13,7 @@
       "runtimeExecutable": "nodemon",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "program": "${workspaceFolder}/hello.go"
+      "program": "${workspaceFolder}/main.go"
     }
   ]
 }
