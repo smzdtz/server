@@ -20,8 +20,12 @@ func Run() {
 func getRoutes() {
 	v1 := router.Group("/v1")
 	// addUserRoutes(v1)
+	// 测试
 	addPingRoutes(v1)
+	// 股票
 	addStockRoutes(v1)
+	// 基金
+	addFundRoutes(v1)
 	v2 := router.Group("/v2")
 	addPingRoutes(v2)
 }
