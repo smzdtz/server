@@ -22,15 +22,15 @@ type RespZSCF struct {
 				Tag   string `json:"Tag"`
 			} `json:"unpositive_new"`
 		} `json:"comment_new"`
-		Close string `json:"close"`
+		Close string `json:"Close"`
 	} `json:"datas"`
 }
 
 type CapitalInfo struct {
 	// 股票上市时间
-	ListTime int64 `json:"listTime"`
+	ListTime int64 `json:"ListTime"`
 	// 收盘价
-	Close string `json:"close"`
+	Close string `json:"Close"`
 	//	芝士财富投资亮点
 	PositiveNew []struct {
 		Value string `json:"Value"`

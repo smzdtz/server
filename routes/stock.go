@@ -9,6 +9,7 @@ import (
 	"smzdtz-server/datacenter"
 	"smzdtz-server/datacenter/eastmoney"
 	"smzdtz-server/datacenter/sina"
+	"smzdtz-server/datacenter/zsxg"
 
 	"github.com/gin-gonic/gin"
 )
@@ -71,7 +72,9 @@ func addStockRoutes(rg *gin.RouterGroup) {
 			Code string `form:"code"`
 		}
 		var data = gin.H{
-			"Results": eastmoney.CompanyProfile{},
+			"Code":    200,
+			"Message": "success",
+			"Data":    eastmoney.CompanyProfile{},
 		}
 		if err := c.ShouldBindQuery(&params); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -79,19 +82,23 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		}
 		resp, err := datacenter.EastMoney.QueryCompanyProfile(c, params.Code)
 		if err != nil {
-			data["Error"] = err.Error()
+			data["Code"] = 500
+			data["Message"] = err.Error()
 			c.JSON(http.StatusOK, data)
 			return
 		}
-		c.JSON(http.StatusOK, resp)
+		data["Data"] = resp
+		c.JSON(http.StatusOK, data)
 	})
 	// 芝士财富股票概况
-	stock.GET("/zsxg/capitalInfo", func(c *gin.Context) {
+	stock.GET("/zsxg/info", func(c *gin.Context) {
 		var params struct {
 			Code string `form:"code"`
 		}
 		var data = gin.H{
-			"Results": eastmoney.CompanyProfile{},
+			"Code":    200,
+			"Message": "success",
+			"Data":    zsxg.CapitalInfo{},
 		}
 		if err := c.ShouldBindQuery(&params); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -99,10 +106,11 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		}
 		resp, err := datacenter.Zsxg.QueryCommentNew(c, params.Code)
 		if err != nil {
-			data["Error"] = err.Error()
+			data["Message"] = err.Error()
 			c.JSON(http.StatusOK, data)
 			return
 		}
-		c.JSON(http.StatusOK, resp)
+		data["Data"] = resp
+		c.JSON(http.StatusOK, data)
 	})
 }
