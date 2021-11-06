@@ -23,8 +23,9 @@ func addStockRoutes(rg *gin.RouterGroup) {
 			Keyword string `form:"keyword"`
 		}
 		var data = gin.H{
-			"Results": []sina.SearchResult{},
+			"data": []sina.SearchResult{},
 		}
+
 		if err := c.ShouldBindQuery(&params); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -36,7 +37,7 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		results, err := datacenter.Sina.KeywordSearch(c, params.Keyword)
 
 		if err != nil {
-			data["Error"] = err.Error()
+			data["error"] = err.Error()
 			c.JSON(http.StatusOK, data)
 			return
 		}
@@ -63,7 +64,7 @@ func addStockRoutes(rg *gin.RouterGroup) {
 			}
 		}
 
-		data["Results"] = result
+		data["data"] = result
 		c.JSON(http.StatusOK, data)
 	})
 	// 东方财富股票概况
@@ -71,23 +72,17 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		var params struct {
 			Code string `form:"code"`
 		}
-		var data = gin.H{
-			"Code":    200,
-			"Message": "success",
-			"Data":    eastmoney.CompanyProfile{},
-		}
+		var data = eastmoney.CompanyProfile{}
 		if err := c.ShouldBindQuery(&params); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 		resp, err := datacenter.EastMoney.QueryCompanyProfile(c, params.Code)
 		if err != nil {
-			data["Code"] = 500
-			data["Message"] = err.Error()
 			c.JSON(http.StatusOK, data)
 			return
 		}
-		data["Data"] = resp
+		data = resp
 		c.JSON(http.StatusOK, data)
 	})
 	// 芝士财富股票概况
@@ -95,22 +90,24 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		var params struct {
 			Code string `form:"code"`
 		}
-		var data = gin.H{
-			"Code":    200,
-			"Message": "success",
-			"Data":    zsxg.CapitalInfo{},
-		}
+		var data = zsxg.CapitalInfo{}
+		// var data = gin.H{
+		// 	"Code":    200,
+		// 	"Message": "success",
+		// 	"Data":    zsxg.CapitalInfo{},
+		// }
 		if err := c.ShouldBindQuery(&params); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		resp, err := datacenter.Zsxg.QueryCommentNew(c, params.Code)
-		if err != nil {
-			data["Message"] = err.Error()
-			c.JSON(http.StatusOK, data)
-			return
-		}
-		data["Data"] = resp
+		resp, _ := datacenter.Zsxg.QueryCommentNew(c, params.Code)
+		// if err != nil {
+		// 	data["Message"] = err.Error()
+		// 	c.JSON(http.StatusOK, data)
+		// 	return
+		// }
+		data = resp
+		// data["Data"] = resp
 		c.JSON(http.StatusOK, data)
 	})
 }
