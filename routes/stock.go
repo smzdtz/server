@@ -17,6 +17,39 @@ import (
 func addStockRoutes(rg *gin.RouterGroup) {
 	stock := rg.Group("/stock")
 
+	// 东方财富 - 价值评估
+	stock.GET("/eastmoney/getJiaZhiPingGu", func(c *gin.Context) {
+		var params struct {
+			Code string `form:"code"`
+		}
+		if err := c.ShouldBindQuery(&params); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		data, err := datacenter.EastMoney.QueryJiaZhiPingGu(c, params.Code)
+		if err != nil {
+			c.JSON(http.StatusOK, data)
+			return
+		}
+		c.JSON(http.StatusOK, data)
+	})
+
+	// 东方财富 - 综合评价
+	stock.GET("/eastmoney/getZongHePingJia", func(c *gin.Context) {
+		var params struct {
+			Code string `form:"code"`
+		}
+		if err := c.ShouldBindQuery(&params); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		data, err := datacenter.EastMoney.QueryZongHePingJia(c, params.Code)
+		if err != nil {
+			c.JSON(http.StatusOK, data)
+			return
+		}
+		c.JSON(http.StatusOK, data)
+	})
 	// Search 检索股票
 	stock.GET("/search", func(c *gin.Context) {
 		var params struct {
