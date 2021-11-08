@@ -16,7 +16,6 @@ import (
 
 func addStockRoutes(rg *gin.RouterGroup) {
 	stock := rg.Group("/stock")
-
 	// 东方财富 - 价值评估
 	stock.GET("/eastmoney/getJiaZhiPingGu", func(c *gin.Context) {
 		var params struct {
@@ -33,7 +32,6 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		}
 		c.JSON(http.StatusOK, data)
 	})
-
 	// 东方财富 - 综合评价
 	stock.GET("/eastmoney/getZongHePingJia", func(c *gin.Context) {
 		var params struct {
@@ -101,7 +99,7 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		c.JSON(http.StatusOK, data)
 	})
 	// 东方财富股票概况
-	stock.GET("/profile", func(c *gin.Context) {
+	stock.GET("/eastmoney/getProfile", func(c *gin.Context) {
 		var params struct {
 			Code string `form:"code"`
 		}
@@ -116,6 +114,23 @@ func addStockRoutes(rg *gin.RouterGroup) {
 			return
 		}
 		data = resp
+		c.JSON(http.StatusOK, data)
+	})
+	// 东方财富估值状态
+	stock.GET("/eastmoney/getValuationStatus", func(c *gin.Context) {
+		var params struct {
+			Code string `form:"code"`
+		}
+		// var data := map[string]string{}
+		if err := c.ShouldBindQuery(&params); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		data, err := datacenter.EastMoney.QueryValuationStatus(c, params.Code)
+		if err != nil {
+			c.JSON(http.StatusOK, data)
+			return
+		}
 		c.JSON(http.StatusOK, data)
 	})
 	// 芝士财富股票概况
