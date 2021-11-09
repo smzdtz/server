@@ -6,29 +6,25 @@ import (
 )
 
 type RespStockNews struct {
-	IsSuccess   bool       `json:"IsSuccess"`
-	Code        int64      `json:"Code"`
-	Message     string     `json:"Message"`
-	TotalPage   int64      `json:"TotalPage"`
-	TotalCount  int64      `json:"TotalCount"`
-	Keyword     string     `json:"Keyword"`
-	Data        []Datum    `json:"Data"`
-	RelatedWord string     `json:"RelatedWord"`
-	StillSearch []string   `json:"StillSearch"`
-	StockModel  StockModel `json:"StockModel"`
-}
-
-type Datum struct {
-	ArtUniqueURL  string `json:"Art_UniqueUrl"`
-	ArtTitle      string `json:"Art_Title"`
-	ArtURL        string `json:"Art_Url"`
-	ArtCreateTime string `json:"Art_CreateTime"`
-	ArtContent    string `json:"Art_Content"`
-}
-
-type StockModel struct {
-	Name string `json:"Name"`
-	Code string `json:"Code"`
+	IsSuccess  bool   `json:"IsSuccess"`
+	Code       int    `json:"Code"`
+	Message    string `json:"Message"`
+	TotalPage  int    `json:"TotalPage"`
+	TotalCount int    `json:"TotalCount"`
+	Keyword    string `json:"Keyword"`
+	Data       []struct {
+		ArtUniqueUrl  string `json:"Art_UniqueUrl"`
+		ArtTitle      string `json:"Art_Title"`
+		ArtUrl        string `json:"Art_Url"`
+		ArtCreateTime string `json:"Art_CreateTime"`
+		ArtContent    string `json:"Art_Content"`
+	} `json:"Data"`
+	RelatedWord string   `json:"RelatedWord"`
+	StillSearch []string `json:"StillSearch"`
+	StockModel  struct {
+		Name string `json:"Name"`
+		Code string `json:"Code"`
+	} `json:"StockModel"`
 }
 
 func (e EastMoney) GetStockNews(ctx context.Context) (RespStockNews, error) {
