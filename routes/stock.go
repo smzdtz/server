@@ -98,7 +98,7 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		data["data"] = result
 		c.JSON(http.StatusOK, data)
 	})
-	// 东方财富股票概况
+	// 东方财富 - 股票概况
 	stock.GET("/eastmoney/getProfile", func(c *gin.Context) {
 		var params struct {
 			Code string `form:"code"`
@@ -116,7 +116,7 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		data = resp
 		c.JSON(http.StatusOK, data)
 	})
-	// 东方财富估值状态
+	// 东方财富 - 估值状态
 	stock.GET("/eastmoney/getValuationStatus", func(c *gin.Context) {
 		var params struct {
 			Code string `form:"code"`
@@ -133,7 +133,7 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		}
 		c.JSON(http.StatusOK, data)
 	})
-	// 芝士财富股票概况
+	// 芝士财富 - 股票概况
 	stock.GET("/zsxg/info", func(c *gin.Context) {
 		var params struct {
 			Code string `form:"code"`
