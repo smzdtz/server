@@ -16,3 +16,5 @@ $ go test -run TestQueryFundInfo
 $ npm i nodemon -g
 $ nodemon --exec go run hello.go --signal SIGTERM
 ```
+
+Paste JSON as Code
