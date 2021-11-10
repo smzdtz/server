@@ -48,6 +48,21 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		}
 		c.JSON(http.StatusOK, data)
 	})
+	// 东方财富 - 股票相关资讯
+	stock.GET("/eastmoney/getStockNews", func(c *gin.Context) {
+		var params struct {
+			Code string `form:"code"`
+		}
+		if err := c.ShouldBindQuery(&params); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		data, err := datacenter.EastMoney.GetStockNews(c, params.Code)
+		if err != nil {
+			c.JSON(http.StatusOK, data)
+		}
+		c.JSON(http.StatusOK, data)
+	})
 	// Search 检索股票
 	stock.GET("/search", func(c *gin.Context) {
 		var params struct {
