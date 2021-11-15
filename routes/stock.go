@@ -4,7 +4,6 @@ package routes
 
 import (
 	"net/http"
-	"strings"
 
 	"smzdtz-server/datacenter"
 	"smzdtz-server/datacenter/eastmoney"
@@ -101,7 +100,6 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		//k := []string{"招商银行", "贵州茅台", "600038"}
 		//results, err := s.SearchStocks(c, k)
 		results, err := datacenter.Sina.KeywordSearch(c, params.Keyword)
-
 		if err != nil {
 			data["error"] = err.Error()
 			c.JSON(http.StatusOK, data)
@@ -111,22 +109,10 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		// StockInfoList 股票列表
 		type StockInfoList []sina.SearchResult
 		result := StockInfoList{}
-		for _, i := range results {
-			// 沪市主板：600、601、603、605
-			if strings.HasPrefix(i.Secucode, "600") || strings.HasPrefix(i.Secucode, "601") || strings.HasPrefix(i.Secucode, "603") || strings.HasPrefix(i.Secucode, "605") {
-				result = append(result, i)
-			}
-			// 深市000开头，深市中小板002
-			if strings.HasPrefix(i.Secucode, "000") || strings.HasPrefix(i.Secucode, "002") {
-				result = append(result, i)
-			}
-			// 创业板
-			if strings.HasPrefix(i.Secucode, "300") {
-				result = append(result, i)
-			}
-			// 科创板
-			if strings.HasPrefix(i.Secucode, "688") {
-				result = append(result, i)
+		for _, v := range results {
+			resp, _ := datacenter.EastMoney.QueryCompanyProfile(c, v.Secucode)
+			if resp.Name != "" {
+				result = append(result, v)
 			}
 		}
 
