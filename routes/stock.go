@@ -105,17 +105,19 @@ func addStockRoutes(rg *gin.RouterGroup) {
 			c.JSON(http.StatusOK, data)
 			return
 		}
-
 		// StockInfoList 股票列表
 		type StockInfoList []sina.SearchResult
 		result := StockInfoList{}
-		for _, v := range results {
+		for i, v := range results {
 			resp, _ := datacenter.EastMoney.QueryCompanyProfile(c, v.Secucode)
 			if resp.Name != "" {
 				result = append(result, v)
 			}
+			// 性能问题临时解决方案
+			if i == 4 {
+				break
+			}
 		}
-
 		data["data"] = result
 		c.JSON(http.StatusOK, data)
 	})
