@@ -16,6 +16,22 @@ import (
 
 func addStockRoutes(rg *gin.RouterGroup) {
 	stock := rg.Group("/stock")
+	// 东方财富 - 最新指标
+	stock.GET("/eastmoney/getIndicator", func(c *gin.Context) {
+		var params struct {
+			Code string `form:"code"`
+		}
+		if err := c.ShouldBindQuery(&params); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		data, err := datacenter.EastMoney.QueryIndicator(c, params.Code)
+		if err != nil {
+			c.JSON(http.StatusOK, err)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"data": data})
+	})
 	// 东方财富 - 价值评估
 	stock.GET("/eastmoney/getJiaZhiPingGu", func(c *gin.Context) {
 		var params struct {
@@ -53,14 +69,18 @@ func addStockRoutes(rg *gin.RouterGroup) {
 		var params struct {
 			Code string `form:"code"`
 		}
+		var data = gin.H{
+			"data": []eastmoney.Article{},
+		}
 		if err := c.ShouldBindQuery(&params); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		data, err := datacenter.EastMoney.GetStockNews(c, params.Code)
+		resp, err := datacenter.EastMoney.GetStockNews(c, params.Code)
 		if err != nil {
 			c.JSON(http.StatusOK, data)
 		}
+		data["data"] = resp
 		c.JSON(http.StatusOK, data)
 	})
 	// Search 检索股票

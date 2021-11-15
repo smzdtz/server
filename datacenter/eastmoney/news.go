@@ -50,13 +50,13 @@ func (e EastMoney) GetStockNews(ctx context.Context, secuCode string) ([]Article
 		"Pragma":          "no-cache",
 		"Referer":         "http://so.eastmoney.com/",
 	}
-	newsList := []Article{}
+	// newsList := []Article{}
 	resp := RespStockNews{}
 	apiurl, err := utils.NewHTTPGetURLWithQueryString(ctx, apiUrl, params)
 	if err != nil {
-		return newsList, err
+		return resp.Data, err
 	}
 	err = utils.HTTPGET(ctx, e.HTTPClient, apiurl, header, &resp)
-	newsList = append(newsList, resp.Data...)
-	return newsList, err
+	// newsList = append(newsList, resp.Data...)
+	return resp.Data, err
 }
