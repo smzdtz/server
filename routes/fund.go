@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"smzdtz-server/cron"
 	"smzdtz-server/datacenter"
 	"smzdtz-server/datacenter/eastmoney"
 
@@ -9,9 +10,17 @@ import (
 )
 
 func AddFundRoutes(rg *gin.RouterGroup) {
-	ping := rg.Group("/fund")
+	fund := rg.Group("/fund")
 
-	ping.GET("/info", func(c *gin.Context) {
+	fund.GET("/sync", func(c *gin.Context) {
+		cron.SyncFund()
+		c.JSON(http.StatusOK, gin.H{
+			"Code":    200,
+			"Message": "success",
+		})
+	})
+
+	fund.GET("/info", func(c *gin.Context) {
 		var params struct {
 			Code string `form:"code"`
 		}
