@@ -71,7 +71,7 @@ func main() {
 	}()
 
 	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	log.Println("Shutdown Server ...")
@@ -81,7 +81,5 @@ func main() {
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatal("Server Shutdown:", err)
 	}
-	// log.Println("Server exiting")
-	// log.Println(viper.GetString("server.addr"))
-	// router.Run(":5000")
+	log.Println("Server exiting")
 }
