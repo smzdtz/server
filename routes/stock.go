@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func addStockRoutes(rg *gin.RouterGroup) {
+func AddStockRoutes(rg *gin.RouterGroup) {
 	stock := rg.Group("/stock")
 	// 东方财富 - 最新指标
 	stock.GET("/eastmoney/getIndicator", func(c *gin.Context) {

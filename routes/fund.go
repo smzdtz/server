@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func addFundRoutes(rg *gin.RouterGroup) {
+func AddFundRoutes(rg *gin.RouterGroup) {
 	ping := rg.Group("/fund")
 
 	ping.GET("/info", func(c *gin.Context) {
