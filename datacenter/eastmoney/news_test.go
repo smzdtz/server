@@ -7,7 +7,7 @@ import (
 )
 
 func TestGetStockNews(t *testing.T) {
-	data, err := _em.GetStockNews(_ctx)
+	data, err := _em.GetStockNews(_ctx, "300059.SZ")
 	require.Nil(t, err)
 	require.Len(t, data, 3)
 }
