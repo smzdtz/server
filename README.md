@@ -18,3 +18,8 @@ $ nodemon --exec go run hello.go --signal SIGTERM
 ```
 
 Paste JSON as Code
+
+### 打包
+```bash
+$ GOOS=linux GOARCH=amd64 go build -o app.linux
+```
