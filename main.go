@@ -2,21 +2,36 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
-	cron "smzdtz-server/corn"
+	"smzdtz-server/cron"
 	"smzdtz-server/routes"
 	"smzdtz-server/utils"
 	"time"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 func main() {
 	// 结束时关闭db连接
 	defer utils.CloseGormInstances()
+
+	// 加载配置文件内容到 viper 中以便使用
+	if err := utils.InitViper(".", "config", "toml",
+		func(e fsnotify.Event) {
+			fmt.Println("Config file changed:" + e.Name)
+		}); err != nil {
+		// 文件不存在时 1 使用默认配置，其他 err 直接 panic
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			panic(err)
+		}
+		fmt.Println("Init viper error:" + err.Error())
+	}
 
 	// 判断是否加载viper配置
 	if !utils.IsInitedViper() {
@@ -37,12 +52,13 @@ func main() {
 	routes.AddFundRoutes(v1)
 
 	srv := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":5000",
 		Handler: router,
 	}
 
 	// Shutdown 时关闭 db 和 redis 连接
 	srv.RegisterOnShutdown(func() {
+		fmt.Println("shut down...")
 		utils.CloseGormInstances()
 		utils.CloseRedisInstances()
 	})
@@ -65,7 +81,7 @@ func main() {
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatal("Server Shutdown:", err)
 	}
-	log.Println("Server exiting")
-
-	router.Run(":5000")
+	// log.Println("Server exiting")
+	// log.Println(viper.GetString("server.addr"))
+	// router.Run(":5000")
 }
