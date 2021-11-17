@@ -181,4 +181,8 @@ func AddStockRoutes(rg *gin.RouterGroup) {
 		// data["Data"] = resp
 		c.JSON(http.StatusOK, data)
 	})
+	stock.GET("/cninfo/stock", func(c *gin.Context) {
+		resp, _ := datacenter.CnInfo.StockList(c)
+		c.JSON(http.StatusOK, resp)
+	})
 }
