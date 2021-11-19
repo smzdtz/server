@@ -121,11 +121,13 @@ func (e EastMoney) QueryAllFundList(ctx context.Context, fundType FundType) (Fun
 	var wg sync.WaitGroup
 	var sm sync.Map
 
+	// 注册需要完成的任务数
 	wg.Add(pageCount - 1)
 	for pageIndex := 2; pageIndex <= pageCount; pageIndex++ {
 		reqChan <- pageIndex
 		go func() {
 			defer func() {
+				// 通知任务已经完成
 				wg.Done()
 			}()
 			index := <-reqChan
@@ -160,6 +162,7 @@ func (e EastMoney) QueryAllFundList(ctx context.Context, fundType FundType) (Fun
 			}
 		}()
 	}
+	// 阻塞到所有任务都已经完成之后才继续执行其后的语句
 	wg.Wait()
 
 	// if len(result) != totalCount {
