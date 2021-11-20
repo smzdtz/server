@@ -1,40 +1,32 @@
-package routes
+package controllers
 
 import (
 	"net/http"
-	"smzdtz-server/cron"
 	"smzdtz-server/datacenter"
-	"smzdtz-server/datacenter/eastmoney"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AddFundRoutes(rg *gin.RouterGroup) {
-	fund := rg.Group("/fund")
+// 东方财富 - 基金信息
+func GetFundInfo(c *gin.Context) {
+	params := Params{}
+	err := c.ShouldBindQuery(&params)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	data, err := datacenter.EastMoney.QueryFundInfo(c, params.Code)
 
-	fund.GET("/sync", func(c *gin.Context) {
-		cron.SyncFund()
+	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"Code":    200,
-			"Message": "success",
+			"code":    500,
+			"message": err,
 		})
-	})
-
-	fund.GET("/info", func(c *gin.Context) {
-		var params struct {
-			Code string `form:"code"`
-		}
-		var data = gin.H{
-			"Code":    200,
-			"Message": "success",
-			"Data":    eastmoney.RespFundInfo{},
-		}
-		if err := c.ShouldBindQuery(&params); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		fundresp, _ := datacenter.EastMoney.QueryFundInfo(c, params.Code)
-		data["Data"] = fundresp
-		c.JSON(http.StatusOK, data)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":    200,
+		"message": "success",
+		"data":    data,
 	})
 }

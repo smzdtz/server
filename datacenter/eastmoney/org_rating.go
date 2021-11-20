@@ -58,6 +58,7 @@ func (e EastMoney) QueryOrgRating(ctx context.Context, secuCode string) (OrgRati
 	if err != nil {
 		return nil, err
 	}
+
 	resp := RespOrgRating{}
 	err = utils.HTTPGET(ctx, e.HTTPClient, apiurl, nil, &resp)
 	if err != nil {

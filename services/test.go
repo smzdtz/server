@@ -1,8 +1,6 @@
-package Services
+package services
 
-import (
-	"gin/Models"
-)
+import "smzdtz-server/models"
 
 type Test struct {
 	Id      int    `json:"id"`
@@ -10,7 +8,7 @@ type Test struct {
 }
 
 func (this *Test) Insert() (id int, err error) {
-	var testModel Models.Test
+	var testModel models.Test
 	testModel.Id = this.Id
 	testModel.Testcol = this.Testcol
 	id, err = testModel.Insert()

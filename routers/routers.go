@@ -1,24 +1,37 @@
-package Router
+package routers
 
 import (
-	"gin/Controllers"
-	"gin/Middlewares"
-	"gin/Sessions"
+	"smzdtz-server/controllers"
+	"smzdtz-server/middlewares"
 
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-func InitRouter() {
+func InitRouter() (r *gin.Engine) {
 	router := gin.Default()
 	// 要在路由组之前全局使用「跨域中间件」, 否则OPTIONS会返回404
-	router.Use(Middlewares.Cors())
-	// 使用 session(cookie-based)
-	router.Use(sessions.Sessions("myyyyysession", Sessions.Store))
-	v1 := router.Group("v1")
+	router.Use(middlewares.Cors())
+	api := router.Group("api")
 	{
-		v1.POST("/testinsert", Controllers.TestInsert)
+		api.GET("/ping", controllers.Test)
 	}
+	stock := api.Group("stock")
+	{
+		stock.GET("/getEMProfile", controllers.GetProfile)
+		stock.GET("/getEMStockNews", controllers.GetStockNews)
+		stock.GET("/getEMZongHePingJia", controllers.GetZongHePingJia)
+		stock.GET("getEMFreeHolderse", controllers.GetFreeHolderse)
+		stock.GET("/getEMIndicator", controllers.GetIndicator)
+		stock.GET("/getEMJiaZhiPingGu", controllers.GetJiaZhiPingGu)
 
-	router.Run(":8080")
+		stock.GET("/getZSXGCommentNew", controllers.GetCommentNew)
+		stock.GET("/getCNINFOStockList", controllers.GetStockList)
+
+		stock.GET("search", controllers.SearchStock)
+	}
+	fund := api.Group("fund")
+	{
+		fund.GET("/getEMInfo", controllers.GetFundInfo)
+	}
+	return router
 }

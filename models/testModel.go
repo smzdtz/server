@@ -1,4 +1,6 @@
-package Models
+package models
+
+import "fmt"
 
 type Test struct {
 	Id      int
@@ -11,11 +13,12 @@ type Test struct {
 // }
 
 func (this *Test) Insert() (id int, err error) {
-	result := Mysql.DB.Create(&this)
-	id = this.Id
-	if result.Error != nil {
-		err = result.Error
-		return
-	}
-	return
+	fmt.Println("11")
+	// result := Mysql.DB.Create(&this)
+	// id = this.Id
+	// if result.Error != nil {
+	// 	err = result.Error
+	// 	return
+	// }
+	return 1, nil
 }

@@ -8,12 +8,13 @@ import (
 	"os"
 	"os/signal"
 	"smzdtz-server/cron"
-	"smzdtz-server/routes"
+	"smzdtz-server/routers"
+
+	// "smzdtz-server/routes"
 	"smzdtz-server/utils"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
 
@@ -40,16 +41,7 @@ func main() {
 
 	// 执行定时任务
 	cron.RunCronJobs(true)
-
-	var router = gin.Default()
-	// 注册路由
-	v1 := router.Group("/v1")
-	// 测试
-	routes.AddPingRoutes(v1)
-	// 股票
-	routes.AddStockRoutes(v1)
-	// 基金
-	routes.AddFundRoutes(v1)
+	var router = routers.InitRouter()
 
 	srv := &http.Server{
 		Addr:    ":5000",
