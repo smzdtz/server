@@ -44,7 +44,7 @@ func main() {
 	var router = routers.InitRouter()
 
 	srv := &http.Server{
-		Addr:    ":5000",
+		Addr:    viper.GetString("server.addr"),
 		Handler: router,
 	}
 
