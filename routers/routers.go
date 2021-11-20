@@ -23,6 +23,7 @@ func InitRouter() (r *gin.Engine) {
 		stock.GET("getEMFreeHolderse", controllers.GetFreeHolderse)
 		stock.GET("/getEMIndicator", controllers.GetIndicator)
 		stock.GET("/getEMJiaZhiPingGu", controllers.GetJiaZhiPingGu)
+		stock.GET("/getEMStockTrends", controllers.GetStockTrends)
 
 		stock.GET("/getZSXGCommentNew", controllers.GetCommentNew)
 		stock.GET("/getCNINFOStockList", controllers.GetStockList)

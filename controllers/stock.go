@@ -233,3 +233,30 @@ func GetFreeHolderse(c *gin.Context) {
 		"data":    data,
 	})
 }
+
+//  东方财富-实时行情
+// 0.399006 创业板指
+// 0.399001 深证成指
+// 1.000001 上证指数
+func GetStockTrends(c *gin.Context) {
+	var params struct {
+		SecId string `form:"secid"`
+	}
+	err := c.ShouldBindQuery(&params)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	data, err := datacenter.EastMoney.QueryStockTrends(c, params.SecId)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code":    500,
+			"message": err,
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":    200,
+		"message": "success",
+		"data":    data,
+	})
+}
