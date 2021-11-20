@@ -8,9 +8,13 @@ import (
 )
 
 func InitRouter() (r *gin.Engine) {
-	router := gin.Default()
+	router := gin.New()
 	// 要在路由组之前全局使用「跨域中间件」, 否则OPTIONS会返回404
 	router.Use(middlewares.Cors())
+	// 安全，限制接口访问白名单
+	// TODO：未来要实现限流
+	router.Use(middlewares.IPWhiteList())
+
 	api := router.Group("api")
 	{
 		api.GET("/ping", controllers.Test)
