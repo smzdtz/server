@@ -9,7 +9,7 @@ import (
 )
 
 type Params struct {
-	Code string `form:"code"`
+	Code string `form:"code" binding:"required"`
 }
 
 // 东方财富 - 最新指标

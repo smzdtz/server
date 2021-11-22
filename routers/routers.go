@@ -19,6 +19,12 @@ func InitRouter() (r *gin.Engine) {
 	{
 		api.GET("/ping", controllers.Test)
 	}
+	install := api.Group("install")
+	{
+		install.GET("/status", controllers.Status)
+		install.POST("/store", controllers.Store)
+	}
+	// 股票
 	stock := api.Group("stock")
 	{
 		stock.GET("/getEMProfile", controllers.GetProfile)
@@ -34,9 +40,11 @@ func InitRouter() (r *gin.Engine) {
 
 		stock.GET("search", controllers.SearchStock)
 	}
+	// 基金
 	fund := api.Group("fund")
 	{
 		fund.GET("/getEMInfo", controllers.GetFundInfo)
 	}
+
 	return router
 }

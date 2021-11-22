@@ -5,8 +5,10 @@ package utils
 import (
 	"fmt"
 	"math"
+	"math/rand"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/antlabs/strsim"
 )
@@ -77,4 +79,18 @@ func YiWanString(num float64) string {
 // SplitStringFields 将传入字符串分割为slice
 func SplitStringFields(s string) []string {
 	return regexp.MustCompile(`[\\/\\:\\,\\;\\.\\s\\-\\|\\#\\$\\%\\&\\+\\=\\?]+`).Split(s, -1)
+}
+
+// 生成长度为length的随机字符串
+func RandString(length int64) string {
+	sources := []byte("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	var result []byte
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	sourceLength := len(sources)
+	var i int64 = 0
+	for ; i < length; i++ {
+		result = append(result, sources[r.Intn(sourceLength)])
+	}
+
+	return string(result)
 }
