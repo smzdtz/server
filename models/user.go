@@ -1,12 +1,8 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type User struct {
-	gorm.Model
-	ID       uint   `json:"id" gorm:"primaryKey;default:uuid_generate_v3()"`
+	// TODO: default:uuid_generate_v3()报错
+	ID       uint   `json:"id" gorm:"primaryKey;unique;autoIncrement"`
 	Name     string `json:"name" gorm:"not null;unique;size:32;comment:用户名"`
 	Password string `json:"password" gorm:"not null;size:32;comment:密码"`
 	Salt     string `json:"salt" gorm:"size:6;not null;comment:加盐"`

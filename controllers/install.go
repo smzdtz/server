@@ -40,9 +40,10 @@ func Store(c *gin.Context) {
 		return
 	}
 	// 创建管理员账号
-	err = createAdminUser(form)
+	err = services.CreateAdminUser(params)
 	if err != nil {
-		return json.CommonFailure("创建管理员账号失败", err)
+		utils.Fail(c, utils.Response{"code": 10, "message": "创建管理账号失败"})
+		return
 	}
 
 	utils.Success(c, utils.Response{"data": true})
