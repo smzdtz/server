@@ -1,3 +1,7 @@
+![GitHub Repo stars](https://img.shields.io/github/stars/smzdtz/server)
+![GitHub forks](https://img.shields.io/github/forks/smzdtz/server)
+![](https://img.shields.io/badge/-%E8%B4%A2%E5%AF%8C%E8%87%AA%E7%94%B1-red)
+
 ### 单元测试
 ```bash
 # 在package下执行
