@@ -7,52 +7,48 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"smzdtz-server/cron"
-	"smzdtz-server/routers"
 
-	// "smzdtz-server/routes"
-	"smzdtz-server/utils"
+	"smzdtz-server/internal/cron"
+	"smzdtz-server/internal/router"
+
 	"time"
-
-	"github.com/fsnotify/fsnotify"
-	"github.com/spf13/viper"
 )
 
 func main() {
 	// 结束时关闭db连接
-	defer utils.CloseGormInstances()
+	// defer utils.CloseGormInstances()
 
 	// 加载配置文件内容到 viper 中以便使用
-	if err := utils.InitViper(".", "config", "toml",
-		func(e fsnotify.Event) {
-			fmt.Println("Config file changed:" + e.Name)
-		}); err != nil {
-		// 文件不存在时 1 使用默认配置，其他 err 直接 panic
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			panic(err)
-		}
-		fmt.Println("Init viper error:" + err.Error())
-	}
+	// if err := viper.InitViper(".", "config", "toml",
+	// 	func(e fsnotify.Event) {
+	// 		fmt.Println("Config file changed:" + e.Name)
+	// 	}); err != nil {
+	// 	// 文件不存在时 1 使用默认配置，其他 err 直接 panic
+	// 	if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+	// 		panic(err)
+	// 	}
+	// 	fmt.Println("Init viper error:" + err.Error())
+	// }
 
 	// 判断是否加载viper配置
-	if !utils.IsInitedViper() {
-		panic("Running server must init viper by config file first!")
-	}
+	// if !utils.IsInitedViper() {
+	// 	panic("Running server must init viper by config file first!")
+	// }
 
 	// 执行定时任务
 	cron.RunCronJobs(true)
-	var router = routers.InitRouter()
+	var router = router.InitRouter()
 
 	srv := &http.Server{
-		Addr:    viper.GetString("server.addr"),
+		Addr:    ":5000",
 		Handler: router,
 	}
 
 	// Shutdown 时关闭 db 和 redis 连接
 	srv.RegisterOnShutdown(func() {
 		fmt.Println("shut down...")
-		utils.CloseGormInstances()
-		utils.CloseRedisInstances()
+		// utils.CloseGormInstances()
+		// utils.CloseRedisInstances()
 	})
 
 	go func() {
