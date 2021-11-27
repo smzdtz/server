@@ -2,18 +2,34 @@ package router
 
 import (
 	"net/http"
+	"time"
 
 	"smzdtz-server/internal/middleware"
 	"smzdtz-server/internal/router/fund"
 	"smzdtz-server/internal/router/install"
 	"smzdtz-server/internal/router/stock"
 	"smzdtz-server/internal/router/user"
+	"smzdtz-server/pkg/log"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func InitRouter() (r *gin.Engine) {
 	router := gin.New()
+
+	logger, _ := zap.NewProduction()
+
+	// Add a ginzap middleware, which:
+	//   - Logs all requests, like a combined access and error log.
+	//   - Logs to stdout.
+	//   - RFC3339 with UTC time format.
+	router.Use(log.Ginzap(logger, time.RFC3339, true))
+
+	// Logs all panic to error log
+	//   - stack means whether output the stack info.
+	router.Use(log.RecoveryWithZap(logger, true))
+
 	// 要在路由组之前全局使用「跨域中间件」, 否则OPTIONS会返回404
 	router.Use(middleware.Cors())
 	// 安全，限制接口访问白名单
