@@ -34,7 +34,7 @@ func InitRouter() (r *gin.Engine) {
 	router.Use(middleware.Cors())
 	// 安全，限制接口访问白名单
 	// TODO：未来要实现限流
-	router.Use(middleware.IPWhiteList())
+	// router.Use(middleware.IPWhiteList())
 
 	baseApi := router.Group("api")
 	{
@@ -77,6 +77,7 @@ func InitRouter() (r *gin.Engine) {
 	fundApi := baseApi.Group("fund")
 	{
 		fundApi.GET("/getEMInfo", fund.GetFundInfo)
+		fundApi.GET("/searchFunds", fund.SearchFunds)
 	}
 
 	return router

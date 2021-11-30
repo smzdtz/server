@@ -12,28 +12,39 @@ import (
 	"smzdtz-server/internal/router"
 
 	"time"
+
+	"github.com/fsnotify/fsnotify"
+	"github.com/spf13/viper"
 )
+
+func initViper(configPath, configName, configType string, onConfigChangeRun func(fsnotify.Event)) error {
+	viper.AddConfigPath(configPath)
+	viper.SetConfigName(configName)
+	viper.SetConfigType(configType)
+	if err := viper.ReadInConfig(); err != nil {
+		return err
+	}
+	viper.SetDefault("viper.inited", true)
+	viper.WatchConfig()
+	if onConfigChangeRun != nil {
+		viper.OnConfigChange(onConfigChangeRun)
+	}
+	return nil
+}
 
 func main() {
 	// 结束时关闭db连接
 	// defer utils.CloseGormInstances()
-
 	// 加载配置文件内容到 viper 中以便使用
-	// if err := viper.InitViper(".", "config", "toml",
-	// 	func(e fsnotify.Event) {
-	// 		fmt.Println("Config file changed:" + e.Name)
-	// 	}); err != nil {
-	// 	// 文件不存在时 1 使用默认配置，其他 err 直接 panic
-	// 	if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-	// 		panic(err)
-	// 	}
-	// 	fmt.Println("Init viper error:" + err.Error())
-	// }
-
-	// 判断是否加载viper配置
-	// if !utils.IsInitedViper() {
-	// 	panic("Running server must init viper by config file first!")
-	// }
+	if err := initViper(".", "config", "toml", func(e fsnotify.Event) {
+		log.Println("Config file changed")
+	}); err != nil {
+		// 文件不存在时 1 使用默认配置，其他 err 直接 panic
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			panic(err)
+		}
+		log.Println(nil, "Init viper error:"+err.Error())
+	}
 
 	// 执行定时任务
 	cron.RunCronJobs(true)

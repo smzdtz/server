@@ -2,6 +2,8 @@
 [app]
     # 限制ip访问
     whitelist = "127.0.0.1,::1"
+    # 并发拉取数据时channel的大小
+    chan_size = 100
 
 
 # server 相关配置
