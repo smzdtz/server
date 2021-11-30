@@ -2,6 +2,7 @@ package fund
 
 import (
 	"net/http"
+	"smzdtz-server/internal/cron"
 	"smzdtz-server/internal/datacenter"
 	"smzdtz-server/internal/service"
 
@@ -44,6 +45,22 @@ func SearchFunds(c *gin.Context) {
 		return
 	}
 	data, err := service.SearchFunds(c, []string{params.Code})
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code":    500,
+			"message": err,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":    200,
+		"message": "success",
+		"data":    data,
+	})
+}
+
+func SyncFund(c *gin.Context) {
+	data, err := cron.SyncFund(c)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code":    500,

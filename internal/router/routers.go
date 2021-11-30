@@ -78,6 +78,7 @@ func InitRouter() (r *gin.Engine) {
 	{
 		fundApi.GET("/getEMInfo", fund.GetFundInfo)
 		fundApi.GET("/searchFunds", fund.SearchFunds)
+		fundApi.GET("/syncFund", fund.SyncFund)
 	}
 
 	return router

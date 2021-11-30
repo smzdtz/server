@@ -1,74 +1,35 @@
 package cron
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+	"log"
+	"smzdtz-server/internal/datacenter"
+	"smzdtz-server/internal/datacenter/eastmoney"
+	"smzdtz-server/internal/service"
+
+	"github.com/gin-gonic/gin"
+)
 
 // SyncFund 同步基金数据
-func SyncFund() {
+func SyncFund(c *gin.Context) (map[string]*service.Fund, error) {
 	fmt.Printf("hello")
 	// if !util.IsTradingDay() {
 	// 	return
 	// }
-	// ctx := context.Background()
-	// // logging.Infof(ctx, "SyncFund request start...")
+	ctx := context.Background()
+	log.Printf("SyncFund request start...")
 
-	// // 获取全量列表
-	// efundlist, err := datacenter.EastMoney.QueryAllFundList(ctx, eastmoney.FundTypeALL)
-	// if err != nil {
-	// 	// logging.Error(ctx, "SyncFund QueryAllFundList error:"+err.Error())
-	// 	promSyncError.WithLabelValues("SyncFund").Inc()
-	// 	return
-	// }
+	// 获取全量列表
+	efundlist, err := datacenter.EastMoney.QueryAllFundList(ctx, eastmoney.FundTypeALL)
 
-	// fundCodes := []string{}
-	// for _, efund := range efundlist {
-	// 	fundCodes = append(fundCodes, efund.Fcode)
-	// }
-	// s := core.NewSearcher(ctx)
-	// data, err := s.SearchFunds(ctx, fundCodes)
-	// fundlist := service.FundList{}
-	// typeMap := map[string]struct{}{}
-	// for _, fund := range data {
-	// 	fundlist = append(fundlist, fund)
-	// 	typeMap[fund.Type] = struct{}{}
-	// }
+	println(efundlist, err)
+	fundCodes := []string{}
+	for _, efund := range efundlist {
+		fundCodes = append(fundCodes, efund.Fcode)
+	}
 
-	// 更新 services 变量
-	// models.FundAllList = fundlist
-	// fundtypes := []string{}
-	// for k := range typeMap {
-	// 	fundtypes = append(fundtypes, k)
-	// }
-	// models.FundTypeList = fundtypes
+	data, err := service.SearchFunds(ctx, fundCodes[0:2])
 
-	// 更新文件
-	// b, err := json.Marshal(efundlist)
-	// if err != nil {
-	// 	logging.Errorf(ctx, "SyncFund json marshal efundlist error:%v", err)
-	// 	promSyncError.WithLabelValues("SyncFund").Inc()
-	// } else if err := ioutil.WriteFile(models.RawFundAllListFilename, b, 0666); err != nil {
-	// 	logging.Errorf(ctx, "SyncFund WriteFile efundlist error:%v", err)
-	// 	promSyncError.WithLabelValues("SyncFund").Inc()
-	// }
-	// b, err = json.Marshal(fundlist)
-	// if err != nil {
-	// 	logging.Errorf(ctx, "SyncFund json marshal fundlist error:%v", err)
-	// 	promSyncError.WithLabelValues("SyncFund").Inc()
-	// } else if err := ioutil.WriteFile(models.FundAllListFilename, b, 0666); err != nil {
-	// 	logging.Errorf(ctx, "SyncFund WriteFile fundlist error:%v", err)
-	// 	promSyncError.WithLabelValues("SyncFund").Inc()
-	// }
-	// b, err = json.Marshal(models.FundTypeList)
-	// if err != nil {
-	// 	logging.Errorf(ctx, "SyncFund json marshal fundtypelist error:%v", err)
-	// 	promSyncError.WithLabelValues("SyncFund").Inc()
-	// } else if err := ioutil.WriteFile(models.FundTypeListFilename, b, 0666); err != nil {
-	// 	logging.Errorf(ctx, "SyncFund WriteFile fundtypelist error:%v", err)
-	// 	promSyncError.WithLabelValues("SyncFund").Inc()
-	// }
-
-	// 更新4433列表
-	// Update4433()
-
-	// 更新同步时间
-	// models.SyncFundTime = time.Now()
+	return data, err
 }
